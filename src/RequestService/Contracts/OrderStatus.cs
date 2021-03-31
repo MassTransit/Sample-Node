@@ -4,6 +4,5 @@ namespace Contracts
     {
         public string OrderId { get; init; }
         public string Status { get; init; }
-
     }
 }

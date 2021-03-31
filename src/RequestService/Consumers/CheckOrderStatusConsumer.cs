@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Contracts;
 using MassTransit;
@@ -9,10 +10,12 @@ namespace RequestService.Consumers
     {
         public Task Consume(ConsumeContext<CheckOrderStatus> context)
         {
-            return context.RespondAsync(new OrderStatus()
+            var status = (Status) new Random().Next(4);
+
+            return context.RespondAsync(new OrderStatus
             {
                 OrderId = context.Message.OrderId,
-                Status = "Pending"
+                Status = status.ToString()
             });
         }
     }

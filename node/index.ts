@@ -8,6 +8,21 @@ MessageType.setDefaultNamespace('Contracts');
 
 const bus = masstransit();
 
+/*
+ * Uncomment below to handle the request inside node (stop the .NET endpoint)
+ */
+
+/*
+bus.receiveEndpoint('order-status', cfg => {
+    cfg.handle<CheckOrderStatus>(new MessageType('CheckOrderStatus'), async context => {
+
+        await context.respond<OrderStatus>({orderId: context.message.orderId, status: 'Pending'}, send => {
+            send.messageType = new MessageType('OrderStatus').toMessageType();
+        });
+    });
+});
+*/
+
 let client = bus.requestClient<CheckOrderStatus, OrderStatus>({
     exchange: 'order-status',
     requestType: new MessageType('CheckOrderStatus'),

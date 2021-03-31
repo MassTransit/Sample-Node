@@ -50,12 +50,25 @@ var guid_typescript_1 = require("guid-typescript");
 var readline_1 = __importDefault(require("readline"));
 var messageType_1 = require("masstransit-rabbitmq/dist/messageType");
 var masstransit_rabbitmq_1 = __importDefault(require("masstransit-rabbitmq"));
-messageType_1.MessageType.setDefaultNamespace("Contracts");
+messageType_1.MessageType.setDefaultNamespace('Contracts');
 var bus = masstransit_rabbitmq_1.default();
+/*
+ * Uncomment below to handle the request inside node (stop the .NET endpoint)
+ */
+/*
+bus.receiveEndpoint('order-status', cfg => {
+    cfg.handle<CheckOrderStatus>(new MessageType('CheckOrderStatus'), async context => {
+
+        await context.respond<OrderStatus>({orderId: context.message.orderId, status: 'Pending'}, send => {
+            send.messageType = new MessageType('OrderStatus').toMessageType();
+        });
+    });
+});
+*/
 var client = bus.requestClient({
-    exchange: "order-status",
-    requestType: new messageType_1.MessageType("CheckOrderStatus"),
-    responseType: new messageType_1.MessageType("OrderStatus"),
+    exchange: 'order-status',
+    requestType: new messageType_1.MessageType('CheckOrderStatus'),
+    responseType: new messageType_1.MessageType('OrderStatus'),
 });
 var checkOrderStatusInterval = setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
     var response, e_1;
@@ -66,17 +79,17 @@ var checkOrderStatusInterval = setInterval(function () { return __awaiter(void 0
                 return [4 /*yield*/, client.getResponse({ orderId: guid_typescript_1.Guid.create().toString() })];
             case 1:
                 response = _a.sent();
-                console.log("Order status: ", response.message.orderId, response.message.status);
+                console.log('Order', response.message.orderId, ' status: ', response.message.status);
                 return [3 /*break*/, 3];
             case 2:
                 e_1 = _a.sent();
-                console.error("order status check failed", e_1.message);
+                console.error('order status check failed', e_1.message);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
     });
 }); }, 1000);
-process.on("SIGINT", function () { return __awaiter(void 0, void 0, void 0, function () {
+process.on('SIGINT', function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         clearInterval(checkOrderStatusInterval);
         return [2 /*return*/];
@@ -99,7 +112,7 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
             case 2:
                 if (!(rl_1_1 = _b.sent(), !rl_1_1.done)) return [3 /*break*/, 4];
                 line = rl_1_1.value;
-                if (line === "quit")
+                if (line === 'quit')
                     return [3 /*break*/, 4];
                 _b.label = 3;
             case 3: return [3 /*break*/, 1];
